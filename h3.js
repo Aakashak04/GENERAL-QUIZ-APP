@@ -57,9 +57,11 @@ const questions = [
         type: 'radio',
         question: '10. Who is the Director of Indian 2 ?',
         options: ['Shankar', 'Atlee', 'Raja mouli', 'karthick subburaj'],
-        answer: 'Shankar'
+        answer: 'Yen'
     },
 ];
+
+
 let currentPage = 0;
 const questionsPerPage = 5;
 let timer; 
@@ -68,7 +70,7 @@ function displayQuestions(page) {
     const quizForm = document.getElementById('quiz-form');
     quizForm.innerHTML = '';
     const start = page * questionsPerPage;
-    const end = start + questionsPerPage;
+    const end = Math.min(start + questionsPerPage, questions.length);
     const pageQuestions = questions.slice(start, end);
 
     pageQuestions.forEach((q, index) => {
@@ -129,7 +131,7 @@ function displayQuestions(page) {
 
     
     document.getElementById('prev-btn').style.display = page === 0 ? 'none' : 'inline-block';
-    document.getElementById('next-btn').style.display = (page + 1) * questionsPerPage >= questions.length ? 'none' : 'inline-block';
+    document.getElementById('next-btn').style.display = end >= questions.length ? 'none' : 'inline-block';
 }
 
 function nextPage() {
@@ -147,7 +149,7 @@ function prevPage() {
 }
 
 function submitQuiz() {
-    clearInterval(timer);
+    clearInterval(timer); 
 
     let score = 0;
 
@@ -186,7 +188,7 @@ function closePopup() {
     document.getElementById('score-popup').classList.add('hidden');
 }
 
-let timeLeft = 300;
+let timeLeft = 300; 
 
 function startTimer() {
     timer = setInterval(() => {
