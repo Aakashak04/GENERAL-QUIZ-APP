@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="h2.css">
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>GENERAL QUIZ</h1>
+        <div id="quiz-form"></div>
+        <div id="pagination-controls">
+            <button id="prev-btn" onclick="prevPage()">Previous</button>
+            <button id="next-btn" onclick="nextPage()">Next</button>
+        </div>
+        <button id="submit-btn" onclick="submitQuiz()">Submit</button>
+    </div>
+    <div id="score-popup" class="hidden">
+        <p>Your score is: <span id="score"></span></p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+    <script src="h3.js"></script>
+  <div id="timer">Time left: <span id="time-left"></span> seconds</div>
+</body>
+</html>
