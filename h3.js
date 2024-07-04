@@ -57,15 +57,14 @@ const questions = [
         type: 'radio',
         question: '10. Who is the Director of Indian 2 ?',
         options: ['Shankar', 'Atlee', 'Raja mouli', 'karthick subburaj'],
-        answer: 'Yen'
+        answer: 'Shankar'
     },
 ];
 let currentPage = 0;
 const questionsPerPage = 5;
-let timer; // Declare timer variable globally
+let timer; 
 
 function displayQuestions(page) {
-    console.log("Displaying questions for page:", page);
     const quizForm = document.getElementById('quiz-form');
     quizForm.innerHTML = '';
     const start = page * questionsPerPage;
@@ -128,7 +127,7 @@ function displayQuestions(page) {
         quizForm.appendChild(questionContainer);
     });
 
-    // Handle pagination controls visibility
+    
     document.getElementById('prev-btn').style.display = page === 0 ? 'none' : 'inline-block';
     document.getElementById('next-btn').style.display = (page + 1) * questionsPerPage >= questions.length ? 'none' : 'inline-block';
 }
@@ -148,7 +147,7 @@ function prevPage() {
 }
 
 function submitQuiz() {
-    clearInterval(timer); // Stop the timer
+    clearInterval(timer);
 
     let score = 0;
 
@@ -180,13 +179,14 @@ function submitQuiz() {
 
     document.getElementById('score').textContent = `${score} / ${questions.length}`;
     document.getElementById('score-popup').classList.remove('hidden');
+    document.getElementById('quiz-container').style.display = 'none'; // Hide the quiz form
 }
 
 function closePopup() {
     document.getElementById('score-popup').classList.add('hidden');
 }
 
-let timeLeft = 300; // 5 minutes in seconds
+let timeLeft = 300;
 
 function startTimer() {
     timer = setInterval(() => {
