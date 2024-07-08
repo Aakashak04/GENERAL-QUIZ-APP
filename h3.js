@@ -1,27 +1,134 @@
-let questions = [];
+let questions = [
+    {
+        "question": "1. What is Java?",
+        "type": "radio",
+        "options": ["A programming language", "A coffee brand", "A type of dance", "A car model"],
+        "answer": "A programming language"
+    },
+    {
+        "question": "2. Which company developed Java?",
+        "type": "dropdown",
+        "options": ["Microsoft", "Apple", "Sun Microsystems", "IBM"],
+        "answer": "Sun Microsystems"
+    },
+    {
+        "question": "3. Select the primitive data types in Java:",
+        "type": "checkbox",
+        "options": ["int", "String", "boolean", "List"],
+        "answer": ["int", "boolean"]
+    },
+    {
+        "question": "4. What does JVM stand for?",
+        "type": "text",
+        "answer": "Java Virtual Machine"
+    },
+    {
+        "question": "5. Which of these is not a Java feature?",
+        "type": "radio",
+        "options": ["Object-oriented", "Use of pointers", "Portable", "Dynamic"],
+        "answer": "Use of pointers"
+    },
+    {
+        "question": "6. Which keyword is used to define a subclass in Java?",
+        "type": "dropdown",
+        "options": ["extends", "implements", "inherits", "subclass"],
+        "answer": "extends"
+    },
+    {
+        "question": "7. Which of the following is not a valid access modifier in Java?",
+        "type": "radio",
+        "options": ["public", "private", "protected", "final"],
+        "answer": "final"
+    },
+    {
+        "question": "8. What is the default value of a boolean variable in Java?",
+        "type": "radio",
+        "options": ["true", "false", "0", "null"],
+        "answer": "false"
+    },
+    {
+        "question": "9. Which method is used to start a thread in Java?",
+        "type": "dropdown",
+        "options": ["run()", "execute()", "start()", "begin()"],
+        "answer": "start()"
+    },
+    {
+        "question": "10. Select all valid ways to create a String object in Java:",
+        "type": "checkbox",
+        "options": ["new String()", "String literal", "String()", "new StringBuilder()"],
+        "answer": ["new String()", "String literal"]
+    },
+    {
+        "question": "11. What is the size of an int variable in Java?",
+        "type": "radio",
+        "options": ["16 bits", "32 bits", "64 bits", "128 bits"],
+        "answer": "32 bits"
+    },
+    {
+        "question": "12. Which of the following is not a type of loop in Java?",
+        "type": "dropdown",
+        "options": ["for", "while", "do-while", "repeat"],
+        "answer": "repeat"
+    },
+    {
+        "question": "13. How many catch blocks can be associated with one try block in Java?",
+        "type": "text",
+        "answer": "multiple"
+    },
+    {
+        "question": "14. Which of the following is used to handle exceptions in Java?",
+        "type": "radio",
+        "options": ["try", "catch", "finally", "All of the above"],
+        "answer": "All of the above"
+    },
+    {
+        "question": "15. Select the keywords used for synchronization in Java:",
+        "type": "checkbox",
+        "options": ["synchronized", "volatile", "atomic", "transient"],
+        "answer": ["synchronized", "volatile"]
+    },
+    {
+        "question": "16. What is the parent class of all classes in Java?",
+        "type": "text",
+        "answer": "Object"
+    },
+    {
+        "question": "17. Which package contains the String class?",
+        "type": "radio",
+        "options": ["java.util", "java.io", "java.lang", "java.net"],
+        "answer": "java.lang"
+    },
+    {
+        "question": "18. Which of the following statements are true about interfaces in Java?",
+        "type": "checkbox",
+        "options": ["Interfaces can contain method implementations.", "Interfaces can extend multiple interfaces.", "Interfaces can be instantiated.", "Interfaces can contain constants."],
+        "answer": ["Interfaces can extend multiple interfaces.", "Interfaces can contain constants."]
+    },
+    {
+        "question": "19. Which of these is a valid constructor for a class named 'Person'?",
+        "type": "dropdown",
+        "options": ["Person()", "void Person()", "public void Person()", "None of the above"],
+        "answer": "Person()"
+    },
+    {
+        "question": "20. What does the 'final' keyword mean when applied to a variable?",
+        "type": "radio",
+        "options": ["The variable cannot be changed.", "The variable is thread-safe.", "The variable is private.", "The variable is volatile."],
+        "answer": "The variable cannot be changed."
+    }
+];
+
 let currentPage = 0;
 const questionsPerPage = 5;
 let timer;
 
-async function loadQuestions() {
-    try {
-        console.log('Fetching questions from JSON...');
-        const response = await fetch('questions.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        questions = data.questions;
-        console.log('Questions loaded:', questions);
-        displayQuestions(currentPage);
-        startTimer();
-    } catch (error) {
-        console.error('Error loading questions:', error);
-    }
+function loadQuestions() {
+    displayQuestions(currentPage);
+    startTimer();
 }
 
 function displayQuestions(page) {
-    console.log('Displaying questions for page:', page);
+    console.log("Displaying questions for page:", page);
     const quizForm = document.getElementById('quiz-form');
     quizForm.innerHTML = '';
     const start = page * questionsPerPage;
