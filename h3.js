@@ -120,6 +120,7 @@ let questions = [
 
 let currentPage = 0;
 const questionsPerPage = 5;
+let userAnswers = {};
 let timer;
 
 function loadQuestions() {
@@ -143,10 +144,15 @@ function displayQuestions(page) {
         questionTitle.textContent = q.question;
         questionContainer.appendChild(questionTitle);
 
+        const questionIndex = start + index;
+
         if (q.type === 'text') {
             const input = document.createElement('input');
             input.type = 'text';
-            input.name = `question${start + index}`;
+            input.name = `question${questionIndex}`;
+            if (userAnswers[`question${questionIndex}`]) {
+                input.value = userAnswers[`question${questionIndex}`];
+            }
             questionContainer.appendChild(input);
         } else if (q.type === 'radio') {
             q.options.forEach(option => {
@@ -155,8 +161,11 @@ function displayQuestions(page) {
 
                 const input = document.createElement('input');
                 input.type = 'radio';
-                input.name = `question${start + index}`;
+                input.name = `question${questionIndex}`;
                 input.value = option;
+                if (userAnswers[`question${questionIndex}`] === option) {
+                    input.checked = true;
+                }
 
                 label.appendChild(input);
                 questionContainer.appendChild(label);
@@ -168,20 +177,25 @@ function displayQuestions(page) {
 
                 const input = document.createElement('input');
                 input.type = 'checkbox';
-                input.name = `question${start + index}`;
+                input.name = `question${questionIndex}`;
                 input.value = option;
+                if (userAnswers[`question${questionIndex}`] && userAnswers[`question${questionIndex}`].includes(option)) {
+                    input.checked = true;
+                }
 
                 label.appendChild(input);
                 questionContainer.appendChild(label);
             });
         } else if (q.type === 'dropdown') {
             const select = document.createElement('select');
-            select.name = `question${start + index}`;
-
+            select.name = `question${questionIndex}`;
             q.options.forEach(option => {
                 const optionElem = document.createElement('option');
                 optionElem.value = option;
                 optionElem.textContent = option;
+                if (userAnswers[`question${questionIndex}`] === option) {
+                    optionElem.selected = true;
+                }
                 select.appendChild(optionElem);
             });
 
@@ -195,8 +209,39 @@ function displayQuestions(page) {
     document.getElementById('next-btn').style.display = (page + 1) * questionsPerPage >= questions.length ? 'none' : 'inline-block';
 }
 
+function saveAnswers() {
+    const start = currentPage * questionsPerPage;
+    const end = start + questionsPerPage;
+
+    for (let i = start; i < end; i++) {
+        const question = questions[i];
+        const inputName = `question${i}`;
+
+        if (question.type === 'text') {
+            const input = document.querySelector(`input[name="${inputName}"]`);
+            if (input) {
+                userAnswers[inputName] = input.value.trim();
+            }
+        } else if (question.type === 'radio') {
+            const input = document.querySelector(`input[name="${inputName}"]:checked`);
+            if (input) {
+                userAnswers[inputName] = input.value;
+            }
+        } else if (question.type === 'checkbox') {
+            const inputs = document.querySelectorAll(`input[name="${inputName}"]:checked`);
+            userAnswers[inputName] = Array.from(inputs).map(input => input.value);
+        } else if (question.type === 'dropdown') {
+            const select = document.querySelector(`select[name="${inputName}"]`);
+            if (select) {
+                userAnswers[inputName] = select.value;
+            }
+        }
+    }
+}
+
 function nextPage() {
     if ((currentPage + 1) * questionsPerPage < questions.length) {
+        saveAnswers();
         currentPage++;
         displayQuestions(currentPage);
     }
@@ -204,12 +249,14 @@ function nextPage() {
 
 function prevPage() {
     if (currentPage > 0) {
+        saveAnswers();
         currentPage--;
         displayQuestions(currentPage);
     }
 }
 
 function submitQuiz() {
+    saveAnswers();
     clearInterval(timer);
 
     let score = 0;
@@ -217,24 +264,19 @@ function submitQuiz() {
     questions.forEach((q, index) => {
         const inputName = `question${index}`;
         if (q.type === 'text') {
-            const input = document.querySelector(`input[name="${inputName}"]`);
-            if (input && input.value.trim().toLowerCase() === q.answer.toLowerCase()) {
+            if (userAnswers[inputName] && userAnswers[inputName].toLowerCase() === q.answer.toLowerCase()) {
                 score++;
             }
         } else if (q.type === 'radio') {
-            const input = document.querySelector(`input[name="${inputName}"]:checked`);
-            if (input && input.value === q.answer) {
+            if (userAnswers[inputName] === q.answer) {
                 score++;
             }
         } else if (q.type === 'checkbox') {
-            const inputs = document.querySelectorAll(`input[name="${inputName}"]:checked`);
-            const selectedValues = Array.from(inputs).map(input => input.value);
-            if (JSON.stringify(selectedValues.sort()) === JSON.stringify(q.answer.sort())) {
+            if (JSON.stringify(userAnswers[inputName].sort()) === JSON.stringify(q.answer.sort())) {
                 score++;
             }
         } else if (q.type === 'dropdown') {
-            const select = document.querySelector(`select[name="${inputName}"]`);
-            if (select && select.value === q.answer) {
+            if (userAnswers[inputName] === q.answer) {
                 score++;
             }
         }
@@ -248,7 +290,7 @@ function closePopup() {
     document.getElementById('score-popup').classList.add('hidden');
 }
 
-let timeLeft = 300; // 5 minutes in seconds
+let timeLeft = 300; 
 
 function startTimer() {
     timer = setInterval(() => {
